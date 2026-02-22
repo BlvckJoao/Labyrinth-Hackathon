@@ -1,6 +1,7 @@
 #include <rclcpp/rclcpp.hpp>
 #include <std_msgs/msg/float64_multi_array.hpp>
 #include <sensor_msgs/msg/range.hpp>
+#include <"navigation_node.hpp">
 
 
 NavigationNode::NavigationNode() : 
