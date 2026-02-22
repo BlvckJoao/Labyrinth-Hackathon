@@ -11,15 +11,18 @@ class NavigationNode : public rclcpp::Node {
 
         private:
                 void timer_callback();
-                void scan_callback(const std::sensor_msgs::msg::Range::SharedPtr msg);
 
-                rclcpp::Publisher<std_msgs::msg::FLoat64MultiArray>::SharedPtr cmd_right_pub_;
+                void scan_callback_front(const sensor_msgs::msg::Range::SharedPtr msg);
+                void scan_callback_right(const sensor_msgs::msg::Range::SharedPtr msg);
+                void scan_callback_left(const sensor_msgs::msg::Range::SharedPtr msg);
+
+                rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr cmd_right_pub_;
                 rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr cmd_left_pub_;
 
                 rclcpp::Subscriber<sensor_msgs::msg::Range>::SharedPtr scan_front_sub_;
                 rclcpp::Subscriber<sensor_msgs::msg::Range>::SharedPtr scan_right_sub_;
                 rclcpp::Subscriber<sensor_msgs::msg::Range>::SharedPtr scan_left_sub_;
-                
+
                 rclcpp::TimerBase::SharedPtr timer_;
 
                 enum class RobotState {
