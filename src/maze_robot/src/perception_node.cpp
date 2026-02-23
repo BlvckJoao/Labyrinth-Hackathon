@@ -68,3 +68,11 @@ void PerceptionNode::image_callback(const sensor_msgs::msg::Image::SharedPtr msg
         blue_pub_->publish(msg_blue);
         
 }
+
+int main(int argc, char** argv){
+
+        rclcpp::init(argc, argv);
+        rclcpp::spin(std::make_shared<PerceptionNode>());
+        rclcpp::shutdown();
+        return 0;
+}
