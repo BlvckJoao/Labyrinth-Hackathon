@@ -8,7 +8,7 @@
 
 
 PerceptionNode::PerceptionNode() : Node("perception_node"), 
-red_count_(0), green_count_(0), red_count(0)_ {
+red_counter_(0), green_counter_(0), blue_counter_(0) {
 
         image_sub_ = this->create_subscription<sensor_msgs::msg::Image>("/camera/img_raw", 10,
                 std::bind(&PerceptionNode::image_callback, this, std::placeholders::_1));
@@ -25,7 +25,7 @@ void PerceptionNode::image_callback(const sensor_msgs::msg::Image::SharedPtr msg
 
         try {
                 frame = cv::bridge::toCvCopy(msg, "bgr8")->image;
-        } catch {
+        } catch (const cv_bridge::cv_bridge_exception& e) {
                 RCLCPP_ERROR(this->get_logger(), "cv_bridge error");
                 return;
         }
@@ -44,24 +44,24 @@ void PerceptionNode::image_callback(const sensor_msgs::msg::Image::SharedPtr msg
         cv::inRange(hsv, cv::Scalar(100, 150, 0), cv::Scalar(140,255,255), blue_mask);
 
         if(cv::countNonZero(red_mask) > 500) {
-                red_count_++;
+                red_counter_++;
         }
 
         if(cv::countNonZero(green_mask) > 500) {
-                green_mask_++;
+                green_counter_++;
         }
 
         if(cv::countNonZero(blue_mask) > 500) {
-                blue_count_++;
+                blue_counter_++;
         }
 
         std_msgs::msg::Int32 msg_red;
         std_msgs::msg::Int32 msg_green;
         std_msgs::msg::Int32 msg_blue;
 
-        msg_red.data = red_count_;
-        msg_green.data = green_count_;
-        msg_blue.data = blue_count_;
+        msg_red.data = red_counter_;
+        msg_green.data = green_counter_;
+        msg_blue.data = blue_counter_;
 
         red_pub_->publish(msg_red);
         green_pub_->publish(msg_green);

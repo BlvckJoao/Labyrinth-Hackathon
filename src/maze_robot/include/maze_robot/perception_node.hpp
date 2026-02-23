@@ -17,9 +17,9 @@ class PerceptionNode : public rclcpp::Node {
 
                 rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr image_sub_;
 
-                rclcpp::Publisher<std_msgs::msg:Int32>::SharedPtr red_pub_;
-                rclcpp::Publisher<std_msgs::msg:Int32>::SharedPtr blue_pub_;
-                rclcpp::Publisher<std_msgs::msg:Int32>::SharedPtr green_pub_;
+                rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr red_pub_;
+                rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr blue_pub_;
+                rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr green_pub_;
 
                 int red_counter_;
                 int blue_counter_;

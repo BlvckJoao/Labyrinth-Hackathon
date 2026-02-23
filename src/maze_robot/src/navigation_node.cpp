@@ -12,14 +12,14 @@ front_distance_(10.0), right_distance_(10.0), left_distance_(10.0) {
         cmd_left_pub_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/motor2/commands", 10);
 
         scan_front_sub_ = this->create_subscription<sensor_msgs::msg::Range>("/sensor_range/front", 10, 
-                std::bind(&NavigationNode::scan_callback, this, std::placeholders::_1));
+                std::bind(&NavigationNode::scan_callback_front, this, std::placeholders::_1));
         scan_right_sub_ = this->create_subscription<sensor_msgs::msg::Range>("/sensor_range/right", 10, 
-                std::bind(&NavigationNode::scan_callback, this, std::placeholders::_1));
+                std::bind(&NavigationNode::scan_callback_right, this, std::placeholders::_1));
         scan_left_sub_ = this->create_subscription<sensor_msgs::msg::Range>("/sensor_range/left", 10, 
-                std::bind(&NavigationNode::scan_callback, this, std::placeholders::_1));
+                std::bind(&NavigationNode::scan_callback_left, this, std::placeholders::_1));
 
         timer_ = this->create_wall_timer(
-                std::chrono::milliseconds(100);
+                std::chrono::milliseconds(100),
                 std::bind(&NavigationNode::timer_callback, this));
         }
 
@@ -30,7 +30,7 @@ void NavigationNode::timer_callback() {
 
         if (front_distance_ > 0.5) {
                 state_ = RobotState::FOWARD;
-        } else if (right_distance > left_distance) {
+        } else if (right_distance_ > left_distance_) {
                 state_ = RobotState::TURNING_RIGHT;
         } else {
                 state_ = RobotState::TURNING_LEFT;
@@ -57,17 +57,17 @@ void NavigationNode::timer_callback() {
         cmd_left_pub_->publish(left_cmd);
 }
 
-void NodeNavigation::scan_callback_front(const sensor_msgs::msg::Range::SharedPtr msg) {
+void NavigationNode::scan_callback_front(const sensor_msgs::msg::Range::SharedPtr msg) {
         front_distance_ = msg->range;
 }
 
 
-void NodeNavigation::scan_callback_right(const sensor_msgs::msg::Range::SharedPtr msg) {
+void NavigationNode::scan_callback_right(const sensor_msgs::msg::Range::SharedPtr msg) {
         right_distance_ = msg->range;
 }
 
 
-void NodeNavigation::scan_callback_left(const sensor_msgs::msg::Range::SharedPtr msg) {
+void NavigationNode::scan_callback_left(const sensor_msgs::msg::Range::SharedPtr msg) {
         left_distance_ = msg->range;
 }
 

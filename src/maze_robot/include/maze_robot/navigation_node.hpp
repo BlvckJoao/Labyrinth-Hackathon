@@ -2,6 +2,8 @@
 #define _NAVIGATION_NODE_HPP_
 
 #include <rclcpp/rclcpp.hpp>
+#include <rclcpp/subscription.hpp>
+#include <rclcpp/publisher.hpp>
 #include <std_msgs/msg/float64_multi_array.hpp>
 #include <sensor_msgs/msg/range.hpp>
 
