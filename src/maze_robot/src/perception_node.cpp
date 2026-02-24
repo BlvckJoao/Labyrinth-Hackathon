@@ -1,14 +1,14 @@
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/image.hpp>
 #include <std_msgs/msg/int32.hpp>
-#include <cv_bridge/cv_bridge.hpp>
+#include <cv_bridge/cv_bridge.h>
 #include <opencv2/opencv.hpp>
 
 #include "maze_robot/perception_node.hpp"
 
 
 PerceptionNode::PerceptionNode() : Node("perception_node"), 
-red_counter_(0), green_counter_(0), blue_counter_(0) {
+red_counter_(0), blue_counter_(0), green_counter_(0) {
 
         image_sub_ = this->create_subscription<sensor_msgs::msg::Image>("/camera/img_raw", 10,
                 std::bind(&PerceptionNode::image_callback, this, std::placeholders::_1));
@@ -24,8 +24,8 @@ void PerceptionNode::image_callback(const sensor_msgs::msg::Image::SharedPtr msg
         cv::Mat frame;
 
         try {
-                frame = cv::bridge::toCvCopy(msg, "bgr8")->image;
-        } catch (const cv_bridge::cv_bridge_exception& e) {
+                frame = cv_bridge::toCvCopy(msg, "bgr8")->image;
+        } catch (const std::exception& e) {
                 RCLCPP_ERROR(this->get_logger(), "cv_bridge error");
                 return;
         }
