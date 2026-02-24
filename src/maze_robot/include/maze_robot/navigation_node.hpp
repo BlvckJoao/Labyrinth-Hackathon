@@ -28,9 +28,10 @@ class NavigationNode : public rclcpp::Node {
                 rclcpp::TimerBase::SharedPtr timer_;
 
                 enum class RobotState {
-                        FOWARD,
+                        FORWARD,
                         TURNING_RIGHT,
-                        TURNING_LEFT
+                        TURNING_LEFT,
+                        REAR
                 };
 
                 RobotState state_;

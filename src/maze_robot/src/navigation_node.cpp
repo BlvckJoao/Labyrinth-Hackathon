@@ -5,7 +5,7 @@
 
 
 NavigationNode::NavigationNode() : 
-Node("navigation_node"), state_(RobotState::FOWARD), 
+Node("navigation_node"), state_(RobotState::FORWARD), 
 front_distance_(10.0), right_distance_(10.0), left_distance_(10.0) {
 
         cmd_right_pub_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/motor1/commands", 10);
@@ -19,7 +19,7 @@ front_distance_(10.0), right_distance_(10.0), left_distance_(10.0) {
                 std::bind(&NavigationNode::scan_callback_left, this, std::placeholders::_1));
 
         timer_ = this->create_wall_timer(
-                std::chrono::milliseconds(100),
+                std::chrono::milliseconds(50),
                 std::bind(&NavigationNode::timer_callback, this));
         }
 
@@ -29,7 +29,9 @@ void NavigationNode::timer_callback() {
         std_msgs::msg::Float64MultiArray left_cmd;
 
         if (front_distance_ > 0.5) {
-                state_ = RobotState::FOWARD;
+                state_ = RobotState::FORWARD;
+        }else if(front_distance < 0.1){
+                state_ = RobotState::REAR;
         } else if (right_distance_ > left_distance_) {
                 state_ = RobotState::TURNING_RIGHT;
         } else {
@@ -37,7 +39,7 @@ void NavigationNode::timer_callback() {
         }
 
         switch (state_) {
-                case RobotState::FOWARD:
+                case RobotState::FORWARD:
                         right_cmd.data = {5.0};
                         left_cmd.data = {5.0};
                         break;
@@ -50,6 +52,11 @@ void NavigationNode::timer_callback() {
                 case RobotState::TURNING_LEFT:
                         right_cmd.data = {-5.0};
                         left_cmd.data = {5.0};
+                        break;
+
+                case RobotState::REAR:
+                        right_cmd.data = {-5.0};
+                        left_cmd.data = {-5.0};
                         break;
         }
 
