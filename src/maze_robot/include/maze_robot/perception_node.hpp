@@ -22,8 +22,8 @@ class PerceptionNode : public rclcpp::Node {
                 rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr green_pub_;
 
                 int red_counter_;
-                int blue_counter_;
                 int green_counter_;
+                int blue_counter_;
 };
 
 

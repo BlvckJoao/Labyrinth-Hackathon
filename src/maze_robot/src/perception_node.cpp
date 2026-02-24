@@ -8,7 +8,7 @@
 
 
 PerceptionNode::PerceptionNode() : Node("perception_node"), 
-red_counter_(0), blue_counter_(0), green_counter_(0) {
+red_counter_(0), green_counter_(0), blue_counter_(0) {
 
         image_sub_ = this->create_subscription<sensor_msgs::msg::Image>("/camera/img_raw", 10,
                 std::bind(&PerceptionNode::image_callback, this, std::placeholders::_1));
