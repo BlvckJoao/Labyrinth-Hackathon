@@ -30,7 +30,7 @@ void NavigationNode::timer_callback() {
 
         if (front_distance_ > 0.5) {
                 state_ = RobotState::FORWARD;
-        }else if(front_distance < 0.1){
+        }else if(front_distance_ < 0.1){
                 state_ = RobotState::REAR;
         } else if (right_distance_ > left_distance_) {
                 state_ = RobotState::TURNING_RIGHT;
