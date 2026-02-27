@@ -27,63 +27,43 @@ void NavigationNode::timer_callback() {
         std_msgs::msg::Float64MultiArray right_cmd;
         std_msgs::msg::Float64MultiArray left_cmd;
 
-        auto now = this->now();
-
-        if (turning_) {
-
-                if (turn_direction_ == RobotState::TURNING_RIGHT) {
-                right_cmd.data = {4.0};
-                left_cmd.data  = {-4.0};
-                } else {
-                right_cmd.data = {-4.0};
-                left_cmd.data  = {4.0};
-                }
-
-                cmd_right_pub_->publish(right_cmd);
-                cmd_left_pub_->publish(left_cmd);
-
-                if (now - turn_start_time_ >= turn_duration_) {
-                turning_ = false;
-                }
-
-                return;
+        if (front_distance_ > 0.5) {
+                state_ = RobotState::FORWARD;
+        }else if(front_distance_ < 0.2){
+                state_ = RobotState::REAR;
+        } else if (right_distance_ > left_distance_) {
+                state_ = RobotState::TURNING_RIGHT;
+        } else {
+                state_ = RobotState::TURNING_LEFT;
         }
 
-        if (moving_after_turn_) {
+        switch (state_) {
+                case RobotState::FORWARD:
+                        right_cmd.data = {6.0};
+                        left_cmd.data = {6.0};
+                        break;
 
-                right_cmd.data = {6.0};
-                left_cmd.data  = {6.0};
+                case RobotState::TURNING_RIGHT:
+                        right_cmd.data = {5.0};
+                        left_cmd.data = {-5.0};
+                        break;
+                
+                case RobotState::TURNING_LEFT:
+                        right_cmd.data = {-5.0};
+                        left_cmd.data = {5.0};
+                        break;
 
-                cmd_right_pub_->publish(right_cmd);
-                cmd_left_pub_->publish(left_cmd);
-
-                if (now - move_start_time_ >= move_duration_) {
-                        moving_after_turn_ = false;
+                case RobotState::REAR:
+                        right_cmd.data = {-6.0};
+                        left_cmd.data = {-6.0};
+                        break;
         }
 
-        return;
-        }
-
-        if (front_distance_ < 0.5) {
-
-                if (right_distance_ > left_distance_) {
-                turn_direction_ = RobotState::TURNING_RIGHT;
-                } else {
-                turn_direction_ = RobotState::TURNING_LEFT;
-                }
-
-                turning_ = true;
-                turn_start_time_ = now;
-
-                return;
-        }
-
-        right_cmd.data = {7.0};
-        left_cmd.data  = {7.0};
+        prev_state_ = state_;
 
         cmd_right_pub_->publish(right_cmd);
-        cmd_left_pub_->publish(left_cmd);
-        }
+        cmd_left_pub_->publish(left_cmd);        
+}
 
 
 void NavigationNode::scan_callback_front(const sensor_msgs::msg::Range::SharedPtr msg) {
