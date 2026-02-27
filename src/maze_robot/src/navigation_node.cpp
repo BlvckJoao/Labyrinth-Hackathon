@@ -38,6 +38,13 @@ void NavigationNode::timer_callback() {
                 state_ = RobotState::TURNING_LEFT;
         }
 
+        if(prev_state_ != state_){
+                right_cmd.data = {0.0};
+                right_cmd.data = {0.0};
+                prev_state_ = state_;
+                return;
+        }
+
         switch (state_) {
                 case RobotState::FORWARD:
                         right_cmd.data = {7.5};
@@ -59,6 +66,8 @@ void NavigationNode::timer_callback() {
                         left_cmd.data = {-7.5};
                         break;
         }
+
+        prev_state_ = state_;
 
         cmd_right_pub_->publish(right_cmd);
         cmd_left_pub_->publish(left_cmd);
