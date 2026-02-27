@@ -34,7 +34,7 @@ class NavigationNode : public rclcpp::Node {
                         REAR
                 };
 
-                RobotState state_;
+                RobotState state_, prev_state_;
                 float front_distance_, right_distance_, left_distance_;
 };
 
