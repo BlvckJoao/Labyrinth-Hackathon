@@ -59,8 +59,6 @@ void NavigationNode::timer_callback() {
                         break;
         }
 
-        prev_state_ = state_;
-
         cmd_right_pub_->publish(right_cmd);
         cmd_left_pub_->publish(left_cmd);        
 }
