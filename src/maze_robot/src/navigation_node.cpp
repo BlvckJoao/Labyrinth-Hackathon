@@ -24,50 +24,63 @@ front_distance_(10.0), right_distance_(10.0), left_distance_(10.0) {
         }
 
 void NavigationNode::timer_callback() {
-
         std_msgs::msg::Float64MultiArray right_cmd;
         std_msgs::msg::Float64MultiArray left_cmd;
 
+        RobotState new_state;
+
         if (front_distance_ > 0.5) {
-                state_ = RobotState::FORWARD;
-        }else if(front_distance_ < 0.1){
-                state_ = RobotState::REAR;
+                new_state = RobotState::FORWARD;
+        } else if (front_distance_ < 0.1) {
+                new_state = RobotState::REAR;
         } else if (right_distance_ > left_distance_) {
-                state_ = RobotState::TURNING_RIGHT;
+                new_state = RobotState::TURNING_RIGHT;
         } else {
-                state_ = RobotState::TURNING_LEFT;
+                new_state = RobotState::TURNING_LEFT;
         }
 
-        if(prev_state_ != state_){
+        if (new_state != state_) {
+                state_ = new_state;
+                braking_ = true;
+                brake_start_time_ = this->now();
+        }
+
+        if (braking_) {
+
                 right_cmd.data = {0.0};
-                right_cmd.data = {0.0};
-                prev_state_ = state_;
+                left_cmd.data  = {0.0};
+
+                cmd_right_pub_->publish(right_cmd);
+                cmd_left_pub_->publish(left_cmd);
+
+                if (this->now() - brake_start_time_ > brake_duration_) {
+                braking_ = false;
+                }
+
                 return;
         }
 
         switch (state_) {
                 case RobotState::FORWARD:
-                        right_cmd.data = {7.5};
-                        left_cmd.data = {7.5};
-                        break;
+                right_cmd.data = {7.5};
+                left_cmd.data  = {7.5};
+                break;
 
                 case RobotState::TURNING_RIGHT:
-                        right_cmd.data = {5.0};
-                        left_cmd.data = {-5.0};
-                        break;
-                
+                right_cmd.data = {5.0};
+                left_cmd.data  = {-5.0};
+                break;
+
                 case RobotState::TURNING_LEFT:
-                        right_cmd.data = {-5.0};
-                        left_cmd.data = {5.0};
-                        break;
+                right_cmd.data = {-5.0};
+                left_cmd.data  = {5.0};
+                break;
 
                 case RobotState::REAR:
-                        right_cmd.data = {-7.5};
-                        left_cmd.data = {-7.5};
-                        break;
+                right_cmd.data = {-7.5};
+                left_cmd.data  = {-7.5};
+                break;
         }
-
-        prev_state_ = state_;
 
         cmd_right_pub_->publish(right_cmd);
         cmd_left_pub_->publish(left_cmd);

@@ -34,7 +34,11 @@ class NavigationNode : public rclcpp::Node {
                         REAR
                 };
 
-                RobotState state_, prev_state_;
+                bool braking_ = false;
+                rclcpp::Time brake_start_time_;
+                rclcpp::Duration brake_duration_{0, 200000000};
+
+                RobotState state_;
                 float front_distance_, right_distance_, left_distance_;
 };
 
