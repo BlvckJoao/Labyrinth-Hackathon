@@ -29,6 +29,30 @@ void NavigationNode::timer_callback() {
 
         RobotState new_state;
 
+        if (turning_) {
+
+        std_msgs::msg::Float64MultiArray right_cmd;
+        std_msgs::msg::Float64MultiArray left_cmd;
+
+        if (turn_direction_ == RobotState::TURNING_RIGHT) {
+                right_cmd.data = {5.0};
+                left_cmd.data  = {-5.0};
+        } else {
+                right_cmd.data = {-5.0};
+                left_cmd.data  = {5.0};
+        }
+
+        cmd_right_pub_->publish(right_cmd);
+        cmd_left_pub_->publish(left_cmd);
+
+        if (this->now() - turn_start_time_ > turn_duration_) {
+                turning_ = false;
+                state_ = RobotState::FORWARD;
+        }
+
+        return;
+        }
+
         if (front_distance_ > 0.5) {
                 new_state = RobotState::FORWARD;
         } else if (front_distance_ < 0.1) {
@@ -69,11 +93,21 @@ void NavigationNode::timer_callback() {
                 case RobotState::TURNING_RIGHT:
                 right_cmd.data = {5.0};
                 left_cmd.data  = {-5.0};
+
+                if (this->now() - turn_start_time_ > turn_duration_) {
+                        turning_ = false;
+                        state_ = RobotState::FORWARD;
+                }
+
                 break;
 
                 case RobotState::TURNING_LEFT:
                 right_cmd.data = {-5.0};
                 left_cmd.data  = {5.0};
+                if (this->now() - turn_start_time_ > turn_duration_) {
+                        turning_ = false;
+                        state_ = RobotState::FORWARD;
+                }
                 break;
 
                 case RobotState::REAR:
