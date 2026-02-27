@@ -39,6 +39,10 @@ class NavigationNode : public rclcpp::Node {
                 rclcpp::Duration turn_duration_{std::chrono::milliseconds(400)};
                 RobotState turn_direction_;
 
+                bool moving_after_turn_ = false;
+                rclcpp::Time move_start_time_;
+                rclcpp::Duration move_duration_{std::chrono::milliseconds(300)};
+
                 RobotState state_;
                 float front_distance_, right_distance_, left_distance_;
 };

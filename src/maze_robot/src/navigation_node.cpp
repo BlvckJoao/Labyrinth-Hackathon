@@ -49,10 +49,21 @@ void NavigationNode::timer_callback() {
                 return;
         }
 
-        if (front_distance_ < 0.5) {
+        if (moving_after_turn_) {
 
-                braking_ = true;
-                brake_start_time_ = now;
+                right_cmd.data = {6.0};
+                left_cmd.data  = {6.0};
+
+                cmd_right_pub_->publish(right_cmd);
+                cmd_left_pub_->publish(left_cmd);
+
+                if (now - move_start_time_ >= move_duration_) {
+                        moving_after_turn_ = false;
+        }
+
+        return;
+
+        if (front_distance_ < 0.5) {
 
                 if (right_distance_ > left_distance_) {
                 turn_direction_ = RobotState::TURNING_RIGHT;
