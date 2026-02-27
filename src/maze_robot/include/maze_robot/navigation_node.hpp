@@ -34,10 +34,6 @@ class NavigationNode : public rclcpp::Node {
                         REAR
                 };
 
-                bool braking_ = false;
-                rclcpp::Time brake_start_time_;
-                rclcpp::Duration brake_duration_{0, 200000000};
-
                 bool turning_ = false;
                 rclcpp::Time turn_start_time_{0, 0, RCL_ROS_TIME};
                 rclcpp::Duration turn_duration_{std::chrono::milliseconds(400)};

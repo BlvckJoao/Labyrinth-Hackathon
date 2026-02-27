@@ -13,15 +13,12 @@ public:
 
 private:
 
-    // ===== CALLBACKS =====
     void right_cmd_callback(const std_msgs::msg::Float64MultiArray::SharedPtr msg);
     void left_cmd_callback(const std_msgs::msg::Float64MultiArray::SharedPtr msg);
 
-    // ===== SUBSCRIBERS (recebe do navigation) =====
     rclcpp::Subscription<std_msgs::msg::Float64MultiArray>::SharedPtr right_cmd_sub_;
     rclcpp::Subscription<std_msgs::msg::Float64MultiArray>::SharedPtr left_cmd_sub_;
 
-    // ===== PUBLISHERS (envia para motores reais) =====
     rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr motor1_pub_;
     rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr motor2_pub_;
 };

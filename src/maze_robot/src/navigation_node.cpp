@@ -27,94 +27,47 @@ void NavigationNode::timer_callback() {
         std_msgs::msg::Float64MultiArray right_cmd;
         std_msgs::msg::Float64MultiArray left_cmd;
 
-        RobotState new_state;
+        auto now = this->now();
 
         if (turning_) {
 
-        std_msgs::msg::Float64MultiArray right_cmd;
-        std_msgs::msg::Float64MultiArray left_cmd;
-
-        if (turn_direction_ == RobotState::TURNING_RIGHT) {
-                right_cmd.data = {5.0};
-                left_cmd.data  = {-5.0};
-        } else {
-                right_cmd.data = {-5.0};
-                left_cmd.data  = {5.0};
-        }
-
-        cmd_right_pub_->publish(right_cmd);
-        cmd_left_pub_->publish(left_cmd);
-
-        if (this->now() - turn_start_time_ > turn_duration_) {
-                turning_ = false;
-                state_ = RobotState::FORWARD;
-        }
-
-        return;
-        }
-
-        if (front_distance_ > 0.5) {
-                new_state = RobotState::FORWARD;
-        } else if (front_distance_ < 0.1) {
-                new_state = RobotState::REAR;
-        } else if (right_distance_ > left_distance_) {
-                new_state = RobotState::TURNING_RIGHT;
-        } else {
-                new_state = RobotState::TURNING_LEFT;
-        }
-
-        if (new_state != state_) {
-                state_ = new_state;
-                braking_ = true;
-                brake_start_time_ = this->now();
-        }
-
-        if (braking_) {
-
-                right_cmd.data = {0.0};
-                left_cmd.data  = {0.0};
+                if (turn_direction_ == RobotState::TURNING_RIGHT) {
+                right_cmd.data = {4.0};
+                left_cmd.data  = {-4.0};
+                } else {
+                right_cmd.data = {-4.0};
+                left_cmd.data  = {4.0};
+                }
 
                 cmd_right_pub_->publish(right_cmd);
                 cmd_left_pub_->publish(left_cmd);
 
-                if (this->now() - brake_start_time_ > brake_duration_) {
-                braking_ = false;
+                if (now - turn_start_time_ >= turn_duration_) {
+                turning_ = false;
                 }
 
                 return;
         }
 
-        switch (state_) {
-                case RobotState::FORWARD:
-                right_cmd.data = {7.5};
-                left_cmd.data  = {7.5};
-                break;
+        if (front_distance_ < 0.5) {
 
-                case RobotState::TURNING_RIGHT:
-                right_cmd.data = {5.0};
-                left_cmd.data  = {-5.0};
+                braking_ = true;
+                brake_start_time_ = now;
 
-                if (this->now() - turn_start_time_ > turn_duration_) {
-                        turning_ = false;
-                        state_ = RobotState::FORWARD;
+                if (right_distance_ > left_distance_) {
+                turn_direction_ = RobotState::TURNING_RIGHT;
+                } else {
+                turn_direction_ = RobotState::TURNING_LEFT;
                 }
 
-                break;
+                turning_ = true;
+                turn_start_time_ = now;
 
-                case RobotState::TURNING_LEFT:
-                right_cmd.data = {-5.0};
-                left_cmd.data  = {5.0};
-                if (this->now() - turn_start_time_ > turn_duration_) {
-                        turning_ = false;
-                        state_ = RobotState::FORWARD;
-                }
-                break;
-
-                case RobotState::REAR:
-                right_cmd.data = {-7.5};
-                left_cmd.data  = {-7.5};
-                break;
+                return;
         }
+
+        right_cmd.data = {7.0};
+        left_cmd.data  = {7.0};
 
         cmd_right_pub_->publish(right_cmd);
         cmd_left_pub_->publish(left_cmd);
