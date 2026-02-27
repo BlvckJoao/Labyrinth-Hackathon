@@ -3,7 +3,7 @@
 #include <rclcpp/publisher.hpp>
 #include <std_msgs/msg/float64_multi_array.hpp>
 
-#include "motor_node.hpp"
+#include "maze_robot/motor_node.hpp"
 
 MotorNode::MotorNode() : Node("motor_node")
 {
