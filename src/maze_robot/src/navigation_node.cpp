@@ -19,7 +19,7 @@ front_distance_(10.0), right_distance_(10.0), left_distance_(10.0) {
                 std::bind(&NavigationNode::scan_callback_left, this, std::placeholders::_1));
 
         timer_ = this->create_wall_timer(
-                std::chrono::milliseconds(50),
+                std::chrono::milliseconds(25),
                 std::bind(&NavigationNode::timer_callback, this));
         }
 
@@ -40,23 +40,23 @@ void NavigationNode::timer_callback() {
 
         switch (state_) {
                 case RobotState::FORWARD:
-                        right_cmd.data = {5.0};
-                        left_cmd.data = {5.0};
+                        right_cmd.data = {10.0};
+                        left_cmd.data = {10.0};
                         break;
 
                 case RobotState::TURNING_RIGHT:
-                        right_cmd.data = {5.0};
-                        left_cmd.data = {-5.0};
+                        right_cmd.data = {10.0};
+                        left_cmd.data = {-10.0};
                         break;
                 
                 case RobotState::TURNING_LEFT:
-                        right_cmd.data = {-5.0};
-                        left_cmd.data = {5.0};
+                        right_cmd.data = {-10.0};
+                        left_cmd.data = {10.0};
                         break;
 
                 case RobotState::REAR:
-                        right_cmd.data = {-5.0};
-                        left_cmd.data = {-5.0};
+                        right_cmd.data = {-10.0};
+                        left_cmd.data = {-10.0};
                         break;
         }
 
