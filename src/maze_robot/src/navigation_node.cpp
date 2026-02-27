@@ -8,8 +8,8 @@ NavigationNode::NavigationNode() :
 Node("navigation_node"), state_(RobotState::FORWARD), 
 front_distance_(10.0), right_distance_(10.0), left_distance_(10.0) {
 
-        cmd_right_pub_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/motor1/commands", 10);
-        cmd_left_pub_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/motor2/commands", 10);
+        cmd_right_pub_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/cmd_vel/right", 10);
+        cmd_left_pub_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/cmd_vel/left", 10);
 
         scan_front_sub_ = this->create_subscription<sensor_msgs::msg::Range>("/sensor_range/front", 10, 
                 std::bind(&NavigationNode::scan_callback_front, this, std::placeholders::_1));

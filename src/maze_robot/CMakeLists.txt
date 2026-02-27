@@ -16,6 +16,13 @@ find_package(sensor_msgs REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(OpenCV REQUIRED)
 
+add_executable(motor_node src/motor_node.cpp)
+target_include_directories(motor_node PUBLIC include)
+ament_target_dependencies(motor_node
+  rclcpp
+  std_msgs
+)
+
 add_executable(navigation_node src/navigation_node.cpp)
 target_include_directories(navigation_node PUBLIC include)
 ament_target_dependencies(navigation_node
@@ -35,6 +42,7 @@ ament_target_dependencies(perception_node
 )
 
 install(TARGETS
+  motor_node
   navigation_node
   perception_node
   DESTINATION lib/${PROJECT_NAME}

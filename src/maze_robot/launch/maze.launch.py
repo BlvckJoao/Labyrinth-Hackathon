@@ -3,6 +3,13 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
 
+    motor_node = Node(
+        package='maze_robot',
+        executable='motor_node',
+        name='motor_node',
+        output='screen'
+    )
+
     navigation_node = Node(
         package='maze_robot',
         executable='navigation_node',
@@ -18,6 +25,7 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
+        motor_node,
         navigation_node,
         perception_node
     ])
