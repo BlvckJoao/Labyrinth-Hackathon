@@ -35,3 +35,11 @@ void MotorNode::left_cmd_callback(
 {
     motor2_pub_->publish(*msg);
 }
+
+int main(int argc, char** argv){
+
+        rclcpp::init(argc, argv);
+        rclcpp::spin(std::make_shared<MotorNode>());
+        rclcpp::shutdown();
+        return 0;
+}
