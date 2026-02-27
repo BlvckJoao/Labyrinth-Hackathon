@@ -43,17 +43,29 @@ void PerceptionNode::image_callback(const sensor_msgs::msg::Image::SharedPtr msg
 
         cv::inRange(hsv, cv::Scalar(100, 150, 0), cv::Scalar(140,255,255), blue_mask);
 
-        if(cv::countNonZero(red_mask) > 500) {
+        if(cv::countNonZero(red_mask) > 500 && !saw_red_)  {
                 red_counter_++;
+                saw_red_ = true;
+                saw_green_ = saw_blue_ = false;
         }
 
-        if(cv::countNonZero(green_mask) > 500) {
+        if(cv::countNonZero(green_mask) > 500 && !saw_green_) {
                 green_counter_++;
+                saw_green_ = true;
+                saw_red_ = saw_blue_ = false;
         }
 
-        if(cv::countNonZero(blue_mask) > 500) {
+        if(cv::countNonZero(blue_mask) > 500 && !saw_blue_) {
                 blue_counter_++;
+                saw_blue_ = true;
+                saw_green_ = saw_red_ = false;
         }
+
+        if(cv::countNonZero(red_mask) < 500 &&
+                cv::countNonZero(blue_mask) < 500 && 
+                cv::countNonZero(green_mask) < 500) {
+                        saw_blue_ = saw_red_ = saw_green_ = false;
+         }
 
         std_msgs::msg::Int32 msg_red;
         std_msgs::msg::Int32 msg_green;

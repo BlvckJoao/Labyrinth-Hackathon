@@ -24,6 +24,10 @@ class PerceptionNode : public rclcpp::Node {
                 int red_counter_;
                 int green_counter_;
                 int blue_counter_;
+
+                bool saw_red_;
+                bool saw_green_;
+                bool saw_blue_;
 };
 
 
