@@ -62,6 +62,7 @@ void NavigationNode::timer_callback() {
         }
 
         return;
+        }
 
         if (front_distance_ < 0.5) {
 
@@ -82,7 +83,8 @@ void NavigationNode::timer_callback() {
 
         cmd_right_pub_->publish(right_cmd);
         cmd_left_pub_->publish(left_cmd);
-}
+        }
+
 
 void NavigationNode::scan_callback_front(const sensor_msgs::msg::Range::SharedPtr msg) {
         front_distance_ = msg->range;
